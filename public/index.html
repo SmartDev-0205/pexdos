@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pexdos</title>
+
+    <!-- bootstrap 5  -->
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Catamaran:300,400,600,700%7CRaleway:100,700%7CRoboto:700,900"
+        media="all" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
+        integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
+    <!-- Main css -->
+    <style>
+        iframe {
+            z-index: -100 !important;
+        }
+    </style>
+
+
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shooting-Presale</title>
+    <link rel="icon" type="image/png" href="%PUBLIC_URL%/assets/images/favicon.png" sizes="16x16" />
+    <!-- bootstrap 5  -->
+    <link rel="stylesheet" href="%PUBLIC_URL%/assets/css/lib/bootstrap.min.css" />
+    <!-- Icon Link  -->
+    <link rel="stylesheet" href="%PUBLIC_URL%/assets/css/all.min.css" />
+    <link rel="stylesheet" href="%PUBLIC_URL%/assets/css/line-awesome.min.css" />
+    <link rel="stylesheet" href="%PUBLIC_URL%/assets/css/lib/animate.css" />
+
+    <!-- Plugin Link -->
+    <link rel="stylesheet" href="%PUBLIC_URL%/assets/css/lib/slick.css" />
+
+    <!-- Main css -->
+    <link rel="stylesheet" href="%PUBLIC_URL%/assets/css/main.css" />
+
+
+</head>
+
+<body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+</body>
+<script src="https://code.jquery.com/jquery-1.7.1.min.js"></script>
+<script src="https://cdn.tutorialzine.com/misc/adPacks/v1.js"></script>
+<script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script>
+    AOS.init({
+        duration: 1600,
+        easing: "ease-in-out",
+    });
+
+    /**
+     * @name		jQuery Countdown Plugin
+     * @author		Martin Angelov
+     * @version 	1.0
+     * @url			http://tutorialzine.com/2011/12/countdown-jquery/
+     * @license		MIT License
+     */
+
+    (function ($) {
+        // Number of seconds in every time division
+        var days = 24 * 60 * 60,
+            hours = 60 * 60,
+            minutes = 60;
+
+        // Creating the plugin
+        $.fn.countdown = function (prop) {
+            var options = $.extend(
+                {
+                    callback: function () { },
+                    timestamp: 0,
+                },
+                prop
+            );
+
+            var left, d, h, m, s, positions;
+
+            // Initialize the plugin
+            init(this, options);
+
+            positions = this.find(".position");
+
+            (function tick() {
+                // Time left
+                left = Math.floor((options.timestamp - new Date()) / 1000);
+
+                if (left < 0) {
+                    left = 0;
+                }
+
+                // Number of days left
+                d = Math.floor(left / days);
+                updateDuo(0, 1, d);
+                left -= d * days;
+
+                // Number of hours left
+                h = Math.floor(left / hours);
+                updateDuo(2, 3, h);
+                left -= h * hours;
+
+                // Number of minutes left
+                m = Math.floor(left / minutes);
+                updateDuo(4, 5, m);
+                left -= m * minutes;
+
+                // Number of seconds left
+                s = left;
+                updateDuo(6, 7, s);
+
+                // Calling an optional user supplied callback
+                options.callback(d, h, m, s);
+
+                // Scheduling another call of this function in 1s
+                setTimeout(tick, 1000);
+            })();
+
+            // This function updates two digit positions at once
+            function updateDuo(minor, major, value) {
+                switchDigit(
+                    positions.eq(minor),
+                    Math.floor(value / 10) % 10
+                );
+                switchDigit(positions.eq(major), value % 10);
+            }
+
+            return this;
+        };
+
+        function init(elem, options) {
+            elem.addClass("countdownHolder");
+
+            // Creating the markup inside the container
+            $.each(["Days", "Hours", "Minutes", "Seconds"], function (i) {
+                $('<span class="count' + this + '">')
+                    .html(
+                        '<span class="position">\
+					<span class="digit static">0</span>\
+				</span>\
+				<span class="position">\
+					<span class="digit static">0</span>\
+				</span>'
+                    )
+                    .appendTo(elem);
+
+                if (this != "Seconds") {
+                    elem.append(
+                        '<span class="countDiv countDiv' + i + '"></span>'
+                    );
+                }
+            });
+        }
+
+        // Creates an animated transition between the two numbers
+        function switchDigit(position, number) {
+            var digit = position.find(".digit");
+
+            if (digit.is(":animated")) {
+                return false;
+            }
+
+            if (position.data("digit") == number) {
+                // We are already showing this number
+                return false;
+            }
+
+            position.data("digit", number);
+
+            var replacement = $("<span>", {
+                class: "digit",
+                css: {
+                    top: "-2.1em",
+                    opacity: 0,
+                },
+                html: number,
+            });
+
+            // The .static class is added when the animation
+            // completes. This makes it run smoother.
+
+            digit
+                .before(replacement)
+                .removeClass("static")
+                .animate({ top: "2.5em", opacity: 0 }, "fast", function () {
+                    digit.remove();
+                });
+
+            replacement
+                .delay(100)
+                .animate({ top: 0, opacity: 1 }, "fast", function () {
+                    replacement.addClass("static");
+                });
+        }
+    })(jQuery);
+
+    // other one
+    $(function () {
+        var note = $("#note"),
+            ts = new Date("2022-07-15").getTime(),
+            newYear = true;
+
+        if (new Date() > ts) {
+            // The new year is here! Count towards something else.
+            // Notice the *1000 at the end - time must be in milliseconds
+            ts = new Date().getTime();
+            newYear = false;
+        }
+
+        $("#countdown").countdown({
+            timestamp: ts,
+            callback: function (days, hours, minutes, seconds) {
+                var message = "";
+
+                message += days + " day" + (days == 1 ? "" : "s") + ", ";
+                message += hours + " hour" + (hours == 1 ? "" : "s") + ", ";
+                message +=
+                    minutes +
+                    " minute" +
+                    (minutes == 1 ? "" : "s") +
+                    " and ";
+                message +=
+                    seconds +
+                    " second" +
+                    (seconds == 1 ? "" : "s") +
+                    " <br />";
+
+                if (newYear) {
+                    message += "left until the new year!";
+                } else {
+                    message += "left to 10 days from now!";
+                }
+
+                note.html(message);
+            },
+        });
+    });
+
+    showRegistration = () => {
+        document.querySelector("#loginForm").classList.add("hidden");
+        document
+            .querySelector("#registrationForm")
+            .classList.remove("hidden");
+    };
+
+    showLogin = () => {
+        document.querySelector("#loginForm").classList.remove("hidden");
+        document.querySelector("#registrationForm").classList.add("hidden");
+    };
+
+    jQuery(document).ready(function () {
+        // click on next button
+        jQuery(".form-wizard-next-btn").click(function () {
+            var parentFieldset = jQuery(this).parents(".wizard-fieldset");
+            var currentActiveStep = jQuery(this)
+                .parents(".form-wizard")
+                .find(".form-wizard-steps .active");
+            var next = jQuery(this);
+            var nextWizardStep = true;
+            parentFieldset.find(".wizard-required").each(function () {
+                var thisValue = jQuery(this).val();
+
+                if (thisValue == "") {
+                    jQuery(this).siblings(".wizard-form-error").slideDown();
+                    nextWizardStep = false;
+                } else {
+                    jQuery(this).siblings(".wizard-form-error").slideUp();
+                }
+            });
+            if (nextWizardStep) {
+                next.parents(".wizard-fieldset").removeClass("show", "400");
+                currentActiveStep
+                    .removeClass("active")
+                    .addClass("activated")
+                    .next()
+                    .addClass("active", "400");
+                next.parents(".wizard-fieldset")
+                    .next(".wizard-fieldset")
+                    .addClass("show", "400");
+                jQuery(document)
+                    .find(".wizard-fieldset")
+                    .each(function () {
+                        if (jQuery(this).hasClass("show")) {
+                            var formAtrr =
+                                jQuery(this).attr("data-tab-content");
+                            jQuery(document)
+                                .find(
+                                    ".form-wizard-steps .form-wizard-step-item"
+                                )
+                                .each(function () {
+                                    if (
+                                        jQuery(this).attr("data-attr") ==
+                                        formAtrr
+                                    ) {
+                                        jQuery(this).addClass("active");
+                                        var innerWidth =
+                                            jQuery(this).innerWidth();
+                                        var position =
+                                            jQuery(this).position();
+                                        jQuery(document)
+                                            .find(".form-wizard-step-move")
+                                            .css({
+                                                left: position.left,
+                                                width: innerWidth,
+                                            });
+                                    } else {
+                                        jQuery(this).removeClass("active");
+                                    }
+                                });
+                        }
+                    });
+            }
+        });
+        //click on previous button
+        jQuery(".form-wizard-previous-btn").click(function () {
+            var counter = parseInt(jQuery(".wizard-counter").text());
+            var prev = jQuery(this);
+            var currentActiveStep = jQuery(this)
+                .parents(".form-wizard")
+                .find(".form-wizard-steps .active");
+            prev.parents(".wizard-fieldset").removeClass("show", "400");
+            prev.parents(".wizard-fieldset")
+                .prev(".wizard-fieldset")
+                .addClass("show", "400");
+            currentActiveStep
+                .removeClass("active")
+                .prev()
+                .removeClass("activated")
+                .addClass("active", "400");
+            jQuery(document)
+                .find(".wizard-fieldset")
+                .each(function () {
+                    if (jQuery(this).hasClass("show")) {
+                        var formAtrr =
+                            jQuery(this).attr("data-tab-content");
+                        jQuery(document)
+                            .find(
+                                ".form-wizard-steps .form-wizard-step-item"
+                            )
+                            .each(function () {
+                                if (
+                                    jQuery(this).attr("data-attr") ==
+                                    formAtrr
+                                ) {
+                                    jQuery(this).addClass("active");
+                                    var innerWidth =
+                                        jQuery(this).innerWidth();
+                                    var position = jQuery(this).position();
+                                    jQuery(document)
+                                        .find(".form-wizard-step-move")
+                                        .css({
+                                            left: position.left,
+                                            width: innerWidth,
+                                        });
+                                } else {
+                                    jQuery(this).removeClass("active");
+                                }
+                            });
+                    }
+                });
+        });
+        //click on form submit button
+        jQuery(document).on(
+            "click",
+            ".form-wizard .form-wizard-submit",
+            function () {
+                var parentFieldset =
+                    jQuery(this).parents(".wizard-fieldset");
+                var currentActiveStep = jQuery(this)
+                    .parents(".form-wizard")
+                    .find(".form-wizard-steps .active");
+                parentFieldset.find(".wizard-required").each(function () {
+                    var thisValue = jQuery(this).val();
+                    if (thisValue == "") {
+                        jQuery(this)
+                            .siblings(".wizard-form-error")
+                            .slideDown();
+                    } else {
+                        jQuery(this)
+                            .siblings(".wizard-form-error")
+                            .slideUp();
+                    }
+                });
+            }
+        );
+        // focus on input field check empty or not
+        jQuery(".form-control")
+            .on("focus", function () {
+                var tmpThis = jQuery(this).val();
+                if (tmpThis == "") {
+                    jQuery(this).parent().addClass("focus-input");
+                } else if (tmpThis != "") {
+                    jQuery(this).parent().addClass("focus-input");
+                }
+            })
+            .on("blur", function () {
+                var tmpThis = jQuery(this).val();
+                if (tmpThis == "") {
+                    jQuery(this).parent().removeClass("focus-input");
+                    jQuery(this)
+                        .siblings(".wizard-form-error")
+                        .slideDown("3000");
+                } else if (tmpThis != "") {
+                    jQuery(this).parent().addClass("focus-input");
+                    jQuery(this)
+                        .siblings(".wizard-form-error")
+                        .slideUp("3000");
+                }
+            });
+    });
+</script>
+
+</html>
